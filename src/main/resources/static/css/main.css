@@ -6,24 +6,50 @@ body {
     background-color: #f4f4f4;
 }
 
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.body-background {
+    background: url('/pic/2.jpg') no-repeat center center fixed;
+    background-size: cover; /* 背景图片覆盖整个页面 */
+}
+
 .container {
     width: 80%;
     margin: 20px auto;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between; /* 将子元素分散对齐，第一个在开始，最后一个在末尾 */
+    align-items: center; /* 垂直居中 */
+    padding: 10px 20px; /* 根据需要调整，以便于页面的整体样式 */
+    background: #f4f4f4; /* 可以设置一个背景色，或者根据需要进行更改 */
+}
 .header, .login-container {
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 20px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
+.levels {
+    display: flex;          /* 使用Flexbox布局 */
+    justify-content: space-around; /* 平均分布在容器中，两端对齐 */
+    padding: 20px;
+}
+
 .level {
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    padding: 15px;
-    text-align: left;
+    border: 1px solid #ccc; /* 添加边框 */
+    border-radius: 8px; /* 设置边框圆角 */
+    margin: 10px; /* 为Level之间添加一些外边距，以便彼此区分 */
+    padding: 15px; /* 在Level内部添加一些内边距 */
+    background-color: #fff; /* 设置背景颜色 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
+    text-align: center; /* 文本居中对齐 */
 }
 
 .level h2 {
@@ -69,4 +95,16 @@ a:hover {
 
 .form-group button:hover {
     background-color: #4cae4c;
+}
+
+.btn-login {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-login:hover {
+    background-color: #0056b3;
 }

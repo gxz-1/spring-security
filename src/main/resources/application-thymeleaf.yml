@@ -1,0 +1,14 @@
+spring:
+  thymeleaf:
+    cache: true # 是否缓存模板，避免每次更改模板后都需要重启应用
+    #    mode: HTML # Thymeleaf模板模式，默认为HTML
+    #    encoding: UTF-8 # 编码格式，默认为UTF-8
+    #    check-template: true # 是否检查模板存在，默认为true
+    #    check-template-location: true # 是否检查模板位置，默认为true
+    #    content-type: text/html # 内容类型，默认为text/html
+    #    enabled: true # 是否启用Thymeleaf，默认为true
+    #    prefix: classpath:/templates/ # 模板文件的前缀，默认为classpath:/templates/
+    #    suffix: .html # 模板文件的后缀，默认为.html
+    #    template-resolver-order: # 模板解析器的顺序
+    #    render-hidden-markers-before-checkboxes: false # 在checkbox之前是否渲染隐藏标记，默认为false
+    #    reopen-evaluated-template-files: true # 是否重新打开评估的模板文件，默认为true

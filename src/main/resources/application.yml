@@ -1,3 +1,3 @@
 spring:
-  profile:
-    active: thymeleaf
+  profiles:
+    active: thymeleaf,jdbc

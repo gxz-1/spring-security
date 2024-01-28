@@ -29,6 +29,32 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <!-- jdbc整合包，导入后在yml中配置连接信息，即可直接使用DataSource和JdbcTemplate-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <!-- druid启动器的依赖，1.2.20后才支持springboot3-->
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-3-starter</artifactId>
+            <version>1.2.20</version>
+        </dependency>
+
+        <dependency>
+            <!-- sql数据库连接，这三个缺一不可-->
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.25</version>
+        </dependency>
+
         <!-- spring-security:依赖Aop进行实现-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

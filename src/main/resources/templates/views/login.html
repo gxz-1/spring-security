@@ -10,9 +10,9 @@
 <div class="login-wrapper">
     <div class="login-panel">
         <h2>登录平台</h2>
-        <form th:action="@{/login}" method="post" class="login-form">
-            <input type="text" placeholder="请输入用户名" required>
-            <input type="password" placeholder="请输入密码" required>
+        <form th:action="@{/loginPost}" method="post" class="login-form">
+            <input type="text" name="userName" placeholder="请输入用户名" required>
+            <input type="password" name="passWord" placeholder="请输入密码" required>
             <button type="submit">立即登录</button>
         </form>
     </div>

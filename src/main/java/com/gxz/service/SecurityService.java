@@ -3,6 +3,7 @@ package com.gxz.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,15 @@ public class SecurityService {
     @Autowired
     private DataSource dataSource;
 
+
     @Bean
     //配置UserDetailsService的数据库连接
     public UserDetailsService userDetailsService() {
         return new JdbcUserDetailsManager(dataSource);
     }
+
+//    @Autowired
+//    private PasswordEncoder encoder;
 
     //对密码进行加密
 //    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();

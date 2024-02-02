@@ -32,4 +32,9 @@ public class RoutercController {
         return "views/"+level+"/"+num;
     }
 
+    @RequestMapping("AccessDenied")
+    public String denied(){
+        return "views/unauthorized";
+    }
+
 }

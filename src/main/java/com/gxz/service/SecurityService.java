@@ -3,7 +3,6 @@ package com.gxz.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ import javax.sql.DataSource;
 public class SecurityService {
     /**
      * spring security会自动处理登录以及注销的请求，完成数据库的增删改查
-     * 0. UserDetails实现了数据库操作，需要定义数据库表（或者继承UserDetails自己写mapper）
+     * 0. JdbcUserDetailsManager实现了数据库操作，需要定义数据库表（或者继承UserDetailsService自己写mapper）
      * 0. 在config中SecurityFilterChain定义了授权配置，根据配置写contorller以及登录页面
      * 1. 访问未授权地址时get自动跳转到登录页面
      * 2. 输入账号密码后点击登录post请求，由spring security收集请求参数

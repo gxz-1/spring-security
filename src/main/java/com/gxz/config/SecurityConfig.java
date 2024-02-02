@@ -4,9 +4,11 @@ package com.gxz.config;
 import com.gxz.handler.LoginFailureHandler;
 import com.gxz.handler.LoginSuccessHandler;
 import com.gxz.handler.LoginoutHandler;
+import com.gxz.handler.MyAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -26,7 +28,7 @@ public class SecurityConfig {
     //1.通过HttpSecurity定义授权的规则
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
         //1.登录配置
-        security.formLogin()//没有权限时跳转到登录页面
+        security.formLogin()//没有权限且未登录时跳转到登录页面
                 .loginPage("/mylogin")//指定自定义的get登录请求
                 .loginProcessingUrl("/loginPost")//指定登录的post请求地址
                 .usernameParameter("userName")//指定登录post请求的用户名的key值
@@ -53,15 +55,25 @@ public class SecurityConfig {
 //                .userDetailsService();//如果自定义了UserDetailsService接口实现对象，需要传入
         );
 
-        //4.授权配置
+        //4.授权配置(基于角色ROLE的授权管理)
         security.authorizeHttpRequests(
                 (authz) -> authz
-                        //首页和登录界面和静态资源所有人都可以访问
-                        .requestMatchers("/","/index","/mylogin","/css/**","/pic/**").permitAll()
+                        .requestMatchers("/","/index","/mylogin","/AccessDenied").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/css/**","/pic/**").permitAll()//限定仅GET能访问
                         .requestMatchers("/views/level1/**").hasRole("vip1") //level1下有vip1权限才能访问
                         .requestMatchers("/views/level2/**").hasRole("vip2") //level2有vip2权限才能访问
                         .requestMatchers("/views/level3/**").hasRole("vip3") //level3下有vip3权限才能访问
+//                        .requestMatchers("").hasAnyRole("vip1","vip2")//vip1,vip2只要有任一权限都可以访问
+                        .anyRequest().authenticated()//其他地址需要授权，要放在最后一行
+                        //数据库中存储"ROLE_vip1",hasRole自动添加"ROLE_"前缀
         );
+
+        //5.自定义无权限界面
+        security.exceptionHandling(
+                //设置自定义无权访问的处理代码逻辑
+                (config)->config.accessDeniedHandler(new MyAccessDeniedHandler())
+        );
+
 
         security.csrf().disable(); // 仅用于调试，不推荐在生产环境禁用CSRF保护
 

@@ -49,13 +49,13 @@
         </dependency>
 
         <dependency>
-            <!-- sql数据库连接，这三个缺一不可-->
+            <!-- sql数据库连接-->
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.25</version>
         </dependency>
 
-        <!-- spring-security:依赖Aop进行实现-->
+        <!-- spring-security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -64,6 +64,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
 

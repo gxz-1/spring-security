@@ -1,12 +1,12 @@
 package com.gxz.service;
 
+import com.gxz.mapper.UserMapper;
+import com.gxz.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
+import java.util.Date;
 
 @Service
 public class SecurityService {
@@ -19,17 +19,40 @@ public class SecurityService {
      * 3. spring security调用UserDetailsService.loadUserByusername查找数据库中的用户名
      * 4. 调用PasswordEncoder.matches比较密码，进行登录
      */
+//    @Autowired
+//    UserDetailsService userDetailsService;
 
     @Autowired
-    private DataSource dataSource;
+    private UserMapper userMapper;
 
-
-    @Bean
-    //配置UserDetailsService的数据库连接
-    public UserDetailsService userDetailsService() {
-        return new JdbcUserDetailsManager(dataSource);
+    //在一定时间内登录失败超过一定次数，锁定用户
+    public String LoginFailure(String userName, Integer lockCounts, Long lockDuration){
+        User user = userMapper.selectLoginStatus(userName);
+        Date currentTime = new Date();
+        if(user.getCounts()>=lockCounts){
+            if( currentTime.getTime() - user.getLasttime().getTime()>=lockDuration){
+                user.setCounts(1);//超过时间间隔，重置尝试次数为1
+                user.setEnabled("1");//取消用户锁定
+            }else{
+                user.setEnabled("0");//未超过时间间隔，锁定用户
+                //spring security登录时会根据这个字段自动判断账户是否有效
+            }
+        }else{
+            user.setCounts(user.getCounts()+1);//尝试次数+1
+        }
+        //更新登录状态
+        user.setLasttime(currentTime);//更新最后一次登录失败的时间
+        int rows = userMapper.updateLoginStatus(user);
+        return user.getEnabled();
     }
 
+    //登录成功后，重置登录次数和登录时间
+    public void LoginSuccess(String userName) {
+        User user = userMapper.selectLoginStatus(userName);
+        user.setCounts(0);
+        user.setLasttime(new Date());
+        userMapper.updateLoginStatus(user);
+    }
 //    @Autowired
 //    private PasswordEncoder encoder;
 

@@ -11,8 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -23,6 +25,17 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Autowired
+    private LoginSuccessHandler loginSuccessHandler;
+    @Autowired
+    private LoginFailureHandler loginFailureHandler;
+    @Autowired
+    private LoginoutHandler loginoutHandler;
+
 
     @Bean
     //1.通过HttpSecurity定义授权的规则
@@ -35,15 +48,15 @@ public class SecurityConfig {
                 .passwordParameter("passWord")//指定登录post请求的密码的key值
 //                .defaultSuccessUrl("/")//直接访问登录页面时，成功后重定向地址
 //                .successForwardUrl("/")//所有情况下，认证成功后的请求转发地址
-                .successHandler(new LoginSuccessHandler())//设置登录成功后的处理代码逻辑
+                .successHandler(loginSuccessHandler)//设置登录成功后的处理代码逻辑
 //                .failureUrl("/mylogin?state=failure")//指定登录失败重定向
-                .failureHandler(new LoginFailureHandler());//设置登录失败后的处理代码逻辑
+                .failureHandler(loginFailureHandler);//设置登录失败后的处理代码逻辑
 
         //2.退出配置
         security.logout()//开启注销功能,并允许所有用户访问注销URL
                 .logoutUrl("/logout")//访问/logout时执行注销,绑定到注销按钮
 //                .logoutSuccessUrl("/index")//退出成功后跳转到/index
-                .logoutSuccessHandler(new LoginoutHandler());//设置退出登录的处理代码逻辑
+                .logoutSuccessHandler(loginoutHandler);//设置退出登录的处理代码逻辑
 
         //3.配置rememberme信息
         security.rememberMe((config)->config
@@ -80,8 +93,11 @@ public class SecurityConfig {
         return security.build();
     }
 
-    @Autowired
-    private DataSource dataSource;
+    @Bean
+    //配置UserDetailsService的数据库连接
+    public UserDetailsService userDetailsService() {
+        return new JdbcUserDetailsManager(dataSource);
+    }
 
     @Bean
     //基于datasource把需要rememberme的数据保存到数据库
@@ -98,6 +114,5 @@ public class SecurityConfig {
         //对传入的password进行强散列加密
         return new BCryptPasswordEncoder();
     }
-
 
 }

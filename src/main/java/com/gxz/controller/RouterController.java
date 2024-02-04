@@ -25,9 +25,10 @@ public class RouterController {
     }
 
     @RequestMapping(value = "mylogin",method = RequestMethod.GET)
-    public String toLogin(@RequestParam(required = false) String state){
-        if(state!=null){
-            System.out.println("登录失败！");
+    public String toLogin(@RequestParam(required = false) String state,
+                          @RequestParam(required = false) String enabled){
+        if(state!=null || enabled!=null){
+            System.out.println("登录失败:"+state+" "+enabled);
         }
         return "views/login";
     }

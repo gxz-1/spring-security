@@ -3,7 +3,6 @@ package com.gxz.service;
 import com.gxz.mapper.UserMapper;
 import com.gxz.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,8 +18,7 @@ public class SecurityService {
      * 3. spring security调用UserDetailsService.loadUserByusername查找数据库中的用户名
      * 4. 调用PasswordEncoder.matches比较密码，进行登录
      */
-//    @Autowired
-//    UserDetailsService userDetailsService;
+
 
     @Autowired
     private UserMapper userMapper;
@@ -42,7 +40,7 @@ public class SecurityService {
         }
         //更新登录状态
         user.setLasttime(currentTime);//更新最后一次登录失败的时间
-        int rows = userMapper.updateLoginStatus(user);
+        userMapper.updateLoginStatus(user);
         return user.getEnabled();
     }
 
@@ -55,7 +53,8 @@ public class SecurityService {
     }
 //    @Autowired
 //    private PasswordEncoder encoder;
-
+//    @Autowired
+//    UserDetailsService userDetailsService;
     //对密码进行加密
 //    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 //    String password = encoder.encode("password");

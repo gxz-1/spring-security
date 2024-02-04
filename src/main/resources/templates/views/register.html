@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}">
+</head>
+<body>
+<div class="login-wrapper">
+    <div class="login-panel">
+        <h2>注册平台</h2>
+        <div th:if="${status == '0'}">
+            <p>用户名已被注册</p>
+        </div>
+        <form th:action="@{/registerPost}" method="post" class="login-form">
+             <input type="hidden" name="_csrf" th:value="${_csrf.token}">
+            <input type="text" name="userName" placeholder="请输入用户名" required>
+            <input type="password" name="passWord" placeholder="请输入密码" required>
+            <label for="dropdown">角色：</label>
+            <select name="groupName" id="dropdown">
+                <option value="管理员">管理员</option>
+                <option value="权限一组" selected>权限一组</option>
+                <option value="权限二组">权限二组</option>
+                <option value="权限三组">权限三组</option>
+            </select>
+            <button type="submit">注册</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

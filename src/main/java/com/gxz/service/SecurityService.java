@@ -1,11 +1,17 @@
 package com.gxz.service;
 
 import com.gxz.mapper.UserMapper;
-import com.gxz.pojo.User;
+import com.gxz.pojo.MyUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class SecurityService {
@@ -19,42 +25,27 @@ public class SecurityService {
      * 4. 调用PasswordEncoder.matches比较密码，进行登录
      */
 
-
     @Autowired
-    private UserMapper userMapper;
+    JdbcUserDetailsManager detailsManager;
+    @Autowired
+    PasswordEncoder encoder;
 
-    //在一定时间内登录失败超过一定次数，锁定用户
-    public String LoginFailure(String userName, Integer lockCounts, Long lockDuration){
-        User user = userMapper.selectLoginStatus(userName);
-        Date currentTime = new Date();
-        if(user.getCounts()>=lockCounts){
-            if( currentTime.getTime() - user.getLasttime().getTime()>=lockDuration){
-                user.setCounts(1);//超过时间间隔，重置尝试次数为1
-                user.setEnabled("1");//取消用户锁定
-            }else{
-                user.setEnabled("0");//未超过时间间隔，锁定用户
-                //spring security登录时会根据这个字段自动判断账户是否有效
-            }
-        }else{
-            user.setCounts(user.getCounts()+1);//尝试次数+1
+    public String Register(String userName,String passWord,String groupName){
+        if(detailsManager.userExists(userName)){
+            return "0";
         }
-        //更新登录状态
-        user.setLasttime(currentTime);//更新最后一次登录失败的时间
-        userMapper.updateLoginStatus(user);
-        return user.getEnabled();
-    }
-
-    //登录成功后，重置登录次数和登录时间
-    public void LoginSuccess(String userName) {
-        User user = userMapper.selectLoginStatus(userName);
-        user.setCounts(0);
-        user.setLasttime(new Date());
-        userMapper.updateLoginStatus(user);
+        //查询组对应的权限
+        List<GrantedAuthority> authorities = detailsManager.findGroupAuthorities(groupName);
+        //根据用户名、密码、组权限创建用户
+        UserDetails user=User.withUsername(userName).password(encoder.encode(passWord)).authorities(authorities).build();
+        detailsManager.createUser(user);
+        //将用户添加到组中
+        detailsManager.addUserToGroup(userName,groupName);
+        return "1";
     }
 //    @Autowired
 //    private PasswordEncoder encoder;
-//    @Autowired
-//    UserDetailsService userDetailsService;
+
     //对密码进行加密
 //    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 //    String password = encoder.encode("password");

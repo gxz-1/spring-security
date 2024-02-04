@@ -14,7 +14,11 @@
     <h2 th:text="${userName}"/>
     <div>
         <a th:href="@{/mylogin}" class="btn-login">登录</a>
-        <a th:href="@{/logout}" class="btn-login">注销</a>
+        <form th:action="@{/logout}" method="post">
+            <!--  获取服务器返回的csrf令牌，数据保存在请求作用域中，/logout请求时携带，与服务器的令牌进行校验-->
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn-login">注销</button>
+        </form>
     </div>
 </div>
 

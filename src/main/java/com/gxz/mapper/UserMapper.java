@@ -1,11 +1,11 @@
 package com.gxz.mapper;
 
 
-import com.gxz.pojo.User;
+import com.gxz.pojo.MyUser;
 
 public interface UserMapper {
 
-    int updateLoginStatus(User user);
+    int updateLoginStatus(MyUser myUser);
 
-    User selectLoginStatus(String username);
+    MyUser selectLoginStatus(String username);
 }

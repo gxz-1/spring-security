@@ -35,7 +35,8 @@ public class SecurityConfig {
     private LoginFailureHandler loginFailureHandler;
     @Autowired
     private LoginoutHandler loginoutHandler;
-
+    @Autowired
+    private MyAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     //1.通过HttpSecurity定义授权的规则
@@ -71,31 +72,31 @@ public class SecurityConfig {
         //4.授权配置(基于角色ROLE的授权管理)
         security.authorizeHttpRequests(
                 (authz) -> authz
-                        .requestMatchers("/","/index","/mylogin","/AccessDenied").permitAll()
+                        .requestMatchers("/","/index","/mylogin","/AccessDenied","/register","/toregister").permitAll()
                         .requestMatchers(HttpMethod.GET,"/css/**","/pic/**").permitAll()//限定仅GET能访问
                         .requestMatchers("/views/level1/**").hasRole("vip1") //level1下有vip1权限才能访问
                         .requestMatchers("/views/level2/**").hasRole("vip2") //level2有vip2权限才能访问
                         .requestMatchers("/views/level3/**").hasRole("vip3") //level3下有vip3权限才能访问
 //                        .requestMatchers("").hasAnyRole("vip1","vip2")//vip1,vip2只要有任一权限都可以访问
-                        .anyRequest().authenticated()//其他地址需要授权，要放在最后一行
+//                        .anyRequest().authenticated()//其他地址需要授权，要放在最后一行
                         //数据库中存储"ROLE_vip1",hasRole自动添加"ROLE_"前缀
         );
 
         //5.自定义无权限界面
         security.exceptionHandling(
                 //设置自定义无权访问的处理代码逻辑
-                (config)->config.accessDeniedHandler(new MyAccessDeniedHandler())
+                (config)->config.accessDeniedHandler(accessDeniedHandler)
         );
 
-
-        security.csrf().disable(); // 仅用于调试，不推荐在生产环境禁用CSRF保护
+        //在进行登录和退出验证的时候，1.必须是post请求。2.需要校验csrf令牌
+//        security.csrf().disable(); // 仅用于调试，不推荐在生产环境禁用CSRF保护
 
         return security.build();
     }
 
     @Bean
-    //配置UserDetailsService的数据库连接
-    public UserDetailsService userDetailsService() {
+    //配置数据库连接
+    public JdbcUserDetailsManager detailsManager() {
         return new JdbcUserDetailsManager(dataSource);
     }
 
@@ -107,7 +108,6 @@ public class SecurityConfig {
 //        repository.setCreateTableOnStartup(true);//初始化创建表格，仅使用一次
         return repository;
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder(){

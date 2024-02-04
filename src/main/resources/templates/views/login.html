@@ -10,13 +10,22 @@
 <div class="login-wrapper">
     <div class="login-panel">
         <h2>登录平台</h2>
+        <div th:if="${state == 'failure' && enabled == '1'}">
+            <p>用户名或密码错误</p>
+        </div>
+        <div th:if="${enabled == '0'}">
+            <p>用户已锁定 10分钟后再尝试</p>
+        </div>
         <form th:action="@{/loginPost}" method="post" class="login-form">
+<!--很奇怪，不加这行才能通过csrf <input type="hidden" name="_csrf" th:value="${_csrf.token}">-->
             <input type="text" name="userName" placeholder="请输入用户名" required>
             <input type="password" name="passWord" placeholder="请输入密码" required>
             <input type="checkbox" name="remember-me" value="true">记住我
             <button type="submit">立即登录</button>
+            <a th:href="@{/register}" class="btn-login">先去注册</a>
         </form>
     </div>
+
 </div>
 </body>
 </html>

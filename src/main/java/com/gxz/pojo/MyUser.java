@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class User {
+public class MyUser {
     String username;
     String password;
     String enabled;

@@ -1,18 +1,20 @@
 package com.gxz.controller;
 
+import com.gxz.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 //在项目中包含了Thymeleaf的依赖，Spring Boot会自动配置Thymeleaf视图解析器
 //默认情况下，Thymeleaf模板被放置在templates目录
 @Controller
 public class RouterController {
+
+    @Autowired
+    SecurityService securityService;
 
     @RequestMapping({"/","index"})
     public String index(Model model){
@@ -26,10 +28,11 @@ public class RouterController {
 
     @RequestMapping(value = "mylogin",method = RequestMethod.GET)
     public String toLogin(@RequestParam(required = false) String state,
-                          @RequestParam(required = false) String enabled){
-        if(state!=null || enabled!=null){
-            System.out.println("登录失败:"+state+" "+enabled);
-        }
+                          @RequestParam(required = false) String enabled,
+                          Model model){
+        //基于thymeleaf传递参数，便于提示登录失败信息
+        model.addAttribute("state",state);
+        model.addAttribute("enabled",enabled);
         return "views/login";
     }
 
@@ -41,6 +44,27 @@ public class RouterController {
     @RequestMapping("AccessDenied")
     public String denied(){
         return "views/unauthorized";
+    }
+
+    @RequestMapping("register")
+    public String register(){
+        return "views/register";
+    }
+
+
+    @RequestMapping("toregister")
+    public String registerPost(@RequestParam String userName,
+                               @RequestParam String passWord,
+                               @RequestParam String groupName,
+                               Model model){
+        return "views/register";
+//        String status=securityService.Register(userName,passWord,groupName);
+//        if(status.equals("1")){
+//            return "index";//注册成功返回首页
+//        }else{
+//            model.addAttribute("status",status);
+//            return "views/register";//失败显示错误信息并返回注册页面
+//        }
     }
 
 }

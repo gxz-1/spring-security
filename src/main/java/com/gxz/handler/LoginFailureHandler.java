@@ -1,5 +1,6 @@
 package com.gxz.handler;
 
+import com.gxz.service.LoginFailureService;
 import com.gxz.service.SecurityService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,13 +20,13 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
     private final Long lockDuration= (long) (10*60*1000);//10分钟
 
     @Autowired
-    private SecurityService securityService;
+    private LoginFailureService loginFailureService;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
+                                        AuthenticationException exception) throws IOException {
         String userName = request.getParameter("userName");
-        String enabled = securityService.LoginFailure(userName, lockCounts, lockDuration);
+        String enabled = loginFailureService.LoginFailure(userName, lockCounts, lockDuration);
         response.sendRedirect("/mylogin?state=failure&enabled="+enabled);
     }
 }

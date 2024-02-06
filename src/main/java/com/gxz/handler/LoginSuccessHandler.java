@@ -19,7 +19,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private LoginFailureService loginFailureService;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+                                        Authentication authentication) throws IOException {
         loginFailureService.LoginSuccess(authentication.getName());
         response.sendRedirect("/index");//登录成功后重定向到首页
     }

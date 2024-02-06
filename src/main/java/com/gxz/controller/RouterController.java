@@ -52,19 +52,14 @@ public class RouterController {
     }
 
 
-    @RequestMapping("toregister")
+    @RequestMapping("registerPost")
     public String registerPost(@RequestParam String userName,
                                @RequestParam String passWord,
                                @RequestParam String groupName,
                                Model model){
-        return "views/register";
-//        String status=securityService.Register(userName,passWord,groupName);
-//        if(status.equals("1")){
-//            return "index";//注册成功返回首页
-//        }else{
-//            model.addAttribute("status",status);
-//            return "views/register";//失败显示错误信息并返回注册页面
-//        }
+        String status=securityService.Register(userName,passWord,groupName);
+        model.addAttribute("status",status);
+        return "views/register";//显示注册信息并返回注册页面
     }
 
 }

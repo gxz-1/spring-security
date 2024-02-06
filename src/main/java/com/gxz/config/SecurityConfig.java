@@ -72,7 +72,7 @@ public class SecurityConfig {
         //4.授权配置(基于角色ROLE的授权管理)
         security.authorizeHttpRequests(
                 (authz) -> authz
-                        .requestMatchers("/","/index","/mylogin","/AccessDenied","/register","/toregister").permitAll()
+                        .requestMatchers("/","/index","/mylogin","/AccessDenied","/register","/registerPost").permitAll()
                         .requestMatchers(HttpMethod.GET,"/css/**","/pic/**").permitAll()//限定仅GET能访问
                         .requestMatchers("/views/level1/**").hasRole("vip1") //level1下有vip1权限才能访问
                         .requestMatchers("/views/level2/**").hasRole("vip2") //level2有vip2权限才能访问

@@ -13,6 +13,9 @@
         <div th:if="${status == '0'}">
             <p>用户名已被注册</p>
         </div>
+        <div th:if="${status == '1'}">
+            <p>注册成功</p>
+        </div>
         <form th:action="@{/registerPost}" method="post" class="login-form">
              <input type="hidden" name="_csrf" th:value="${_csrf.token}">
             <input type="text" name="userName" placeholder="请输入用户名" required>
@@ -25,6 +28,7 @@
                 <option value="权限三组">权限三组</option>
             </select>
             <button type="submit">注册</button>
+            <a th:href="@{/mylogin}" class="btn-login">去登录</a>
         </form>
     </div>
 </div>

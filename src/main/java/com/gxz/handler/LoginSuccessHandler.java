@@ -1,7 +1,6 @@
 package com.gxz.handler;
 
 import com.gxz.service.LoginFailureService;
-import com.gxz.service.SecurityService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,6 +21,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         loginFailureService.LoginSuccess(authentication.getName());
-        response.sendRedirect("/");//登录成功后重定向到首页
+        response.sendRedirect("/index");//登录成功后重定向到首页
     }
 }

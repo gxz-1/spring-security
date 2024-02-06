@@ -1,7 +1,5 @@
 package com.gxz.service;
 
-import com.gxz.mapper.UserMapper;
-import com.gxz.pojo.MyUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -9,11 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class SecurityService {
     /**
      * spring security会自动处理登录以及注销的请求，完成数据库的增删改查
@@ -34,30 +33,17 @@ public class SecurityService {
         if(detailsManager.userExists(userName)){
             return "0";
         }
-        //查询组对应的权限
+        //查询组对应的权限（源码中表名groups是sql的关键字，需要重写sql，给groups添加反引号）
+        detailsManager.setGroupAuthoritiesSql("SELECT g.id, g.group_name, ga.authority " +
+                "FROM `groups` g, group_authorities ga WHERE g.group_name = ? AND g.id = ga.group_id");
         List<GrantedAuthority> authorities = detailsManager.findGroupAuthorities(groupName);
         //根据用户名、密码、组权限创建用户
         UserDetails user=User.withUsername(userName).password(encoder.encode(passWord)).authorities(authorities).build();
         detailsManager.createUser(user);
-        //将用户添加到组中
+        //将用户添加到组中(同理，根据源码重写sql)
+        detailsManager.setFindGroupIdSql("select id from `groups` where group_name = ?");
         detailsManager.addUserToGroup(userName,groupName);
         return "1";
     }
-//    @Autowired
-//    private PasswordEncoder encoder;
-
-    //对密码进行加密
-//    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    String password = encoder.encode("password");
-//    //创建用户
-//    UserDetails user1 = User.withUsername("user1").password(password).roles("vip1").build();
-//    UserDetails user2 = User.withUsername("user2").password(password).roles("vip2").build();
-//    UserDetails user3 = User.withUsername("user3").password(password).roles("vip3").build();
-//    UserDetails admin = User.withUsername("admin").password(password).roles("vip1","vip2","vip3").build();
-//    //添加用户并返回
-//    if(!userDetailsManager.userExists("user1")) userDetailsManager.createUser(user1);
-//    if(!userDetailsManager.userExists("user2")) userDetailsManager.createUser(user2);
-//    if(!userDetailsManager.userExists("user3")) userDetailsManager.createUser(user3);
-//    if(!userDetailsManager.userExists("admin")) userDetailsManager.createUser(admin);
 
 }
